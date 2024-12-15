@@ -1,0 +1,428 @@
+{% extends 'emplois_temps/base.html' %}
+{% load static %}
+{% load myfilters %}
+
+
+
+
+
+
+<!--     bock content         --> 
+{% block content%}
+<style>
+    
+    body{
+        background-color:#f5f5f5;
+
+    }
+nav{
+    position:fixed;
+}
+
+#conteneur_section{
+    width: auto;
+    display: flex;
+    border:1px solid red;
+}
+
+#content{
+    
+    width:30%;
+    border:1px solid black;
+}
+
+#content_1{
+    border:1px solid black;
+    width:70%;
+}
+
+
+
+
+.cadre_seance{
+    
+}
+
+.cadre_info_perso{
+    height:100px;
+    text-align: center;
+    padding-top:20px;
+    border:1px solid blue;
+}
+
+.cardre_saisir{
+    align-items: center;
+    width:400px;
+    
+}
+
+
+
+
+
+li{
+    list-style-type: none;
+}
+
+#seanceForm1{
+    display:inline
+}
+input{
+    margin-bottom:10px
+}
+
+form{
+    display:inline
+}
+
+select{
+    margin-bottom:10px
+    
+}
+
+.mainheading{
+    text-align: center;
+}
+
+.errorlist{
+    color:red;
+}
+.signup-button{
+    background-color: blue;
+    border-color: #2BA977;
+}
+.signup-button:hover{
+    background-color: #2BA977;
+    border-color: #2BA977;
+}
+.signup-button:focus{
+    background-color: #2BA977;
+    border-color: #2BA977;
+}
+
+.cadre_show_seance{
+    margin-bottom: auto;
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    
+.cadre_show_seance .titre{
+    border:1px solid green;
+    text-align:center;
+}
+.cadre_info_empT_cour{
+    margin_bottom:100px;
+}
+.cadre_info_TD{
+    border:1px solide yellow;
+    padding-top:500x;
+}
+.cadre_show_seance .cadre_info_cour{
+    margin-bottom:12px;
+    margin-top:50px;
+    padding-left:8px;
+    padding-right:8px;
+    height:auto;
+}
+.cadre_info_cour h2{
+    padding_bottom:10px;
+}
+.cadre_show_seance .cadre_info_cour .cadre_emplois{
+    
+    border:1px solid black;
+    margin-bottom:15px;
+    margin-top:1px;
+    padding:9px;
+    border-radius:10px;
+}
+
+
+table{
+    border:1px solid black;
+    width:100%;
+    text-align:center;
+}
+.libele {
+    border:1px solid black;
+    width:100%;
+    text-align:center;
+}
+th{
+    border:1px solid black;
+}
+td{
+    border:1px solid black;
+}
+.listprof{
+    background-color: #fff;
+    border:1px solid black;
+    width:100%;
+    padding-left:9px;
+    padding-top:9px;
+    position:relative;
+    right:12px;
+}
+
+.date{
+    width:400px;
+}
+.salle{
+    width:100px;
+}
+.enseignant{
+    width:250px;
+}
+.niveau{
+    width:100px;
+}
+.cour{
+    width:160px;
+}
+.cadre_libSeance{
+    margin-top:15px;
+    border:1px solid black;
+    text-align:center;
+}
+.cadre_niv_td{
+     margin-top:15px;
+    border:1px solid black;
+    text-align:center;
+}
+.cadre_lib_fil{
+    margin-top:15px;
+    border:1px solid black;
+    text-align:center;
+}
+.cadre_filiere_cour{
+    margin-bottom:70px;
+    border:1px solid red;
+    margin-top:12px;
+}
+
+</style>
+
+{% if user.type == 'Enseignantspecifique' or user.type == 'Enseignant' %}
+    <div class='cadre_seance' >
+
+        <div class='cadre_info_perso'>
+            
+                <h4>{{user.enseignantadditional.grade}} {{user.last_name}} {{user.first_name}}</h4>
+                <h5>Departement d'origine : {{ user.enseignantadditional.etab_orig}}</h5>
+                {% for userDepartement in user.enseignantadditional.departement.all %}
+                     <h1> {{ userDepartement }} </h1> <br/>
+                {% endfor %}
+                {% for userFiliere in user.enseignantadditional.filiere.all %}
+                     <h1> {{ userFiliere }} </h1> <br/>
+                {% endfor%}
+                {% for departement in departements%}
+                    {{departement}}
+                {% endfor%}
+        </div>
+
+
+    
+
+        <div class='cardre_saisir'>
+
+            <div class="register-form">
+                <form>
+                    <p>
+                        <label for="profileType"></label>
+                            <select id="profileType" class="btn btn-primary btn-lg profileType-button">
+                                <option value="cour" {% if seanceCourForm.is_bound %} selected="selected" {% endif %}>Cour</option>
+                    
+                                <option value="TD" {% if seanceTdForm.is_bound %} selected="selected" {% endif %}>TD</option>
+                            </select>
+                    </p>
+                </form>
+
+                
+               
+
+            <script type="text/javascript">
+                console.log()
+                function displayRightForm() {
+                    if ($('#profileType').val() == "cour") {
+                       
+                        $('#seanceForm1_info').show();
+                        
+                        $('#seanceForm2_info').hide();
+                        
+                    }
+                    else {
+                       
+                        $('#seanceForm2_info').show();
+                        $('#seanceForm1_info').hide();
+                    }
+                }
+                
+                $(document).ready(displayRightForm);
+                $('#profileType').change(displayRightForm);
+                  
+            </script>
+        </div>
+    </div>
+
+
+
+
+{% endif %}
+{% endblock %}
+
+<!--     bock content_1         --> 
+{% block content_1 %}
+
+<div class='cadre_show_seance'>
+    <div class='titre'><h1>Program</h1></div>
+    <div id="seanceForm1_info"> 
+    {% for departement in departement.all %}
+        
+            {% if departement %}
+                <div class = 'cadre_departement'>
+                    <div class="cadre_lib_departement"> <h1> {{departement.departement}}<h1> </div>   
+                
+                        {% for filiere in filieres.all %}
+                            {% for userFiliere in user.enseignantadditional.filiere.all %}
+                                {% if filiere.filiere == userFilier %}
+                                    <div class = 'cadre_filiere_cour'>
+                                        
+                                        <div class="cadre_lib_fil"> <h1> {{filiere.filiere}}<h1> </div>
+
+                                            <div class="cadre_info_empT_cour">
+                                                <div class='cadre_libSeance'><h2 class='libSeance'>COUR</h2></div>
+                    
+                                            
+                                            {% for seance_cour in seance_cours %}
+                                                
+                                                    
+
+                                                            {% if seance_cour.filiere.filiere == filiere.filiere and seance_cour.enseignant.last_name == user.last_name and  seance_cour.enseignant.first_name == user.first_name and userFiliere == filiere.filiere %}
+                                                                
+                                                                {% if seance_cour.niveau.niveau %}
+
+
+                                                                    <div class='cadre_info_cour'>
+                                                                        <h2>{{seance_cour.niveau.niveau}}</h2>
+                                                                        <div class='cadre_emplois'>    
+                                                                                        <table class='libele'>
+                                                                                            <tr>
+                                                                                                <th class='date'> Date</th>
+                                                                                                <th class='salle'> Salle </th>
+                                                                                                <th class='enseignant'> Enseignant </th>
+                                                                                                <th class='niveau'> Niveau </th>
+                                                                                                <th class='cour'> Cour </th>
+                                                                                            </tr> 
+                                                                                        </table>
+                                                                                        {% for niveau in niveaux.all %}
+                                                                                            {% if niveau.niveau%}
+                                                                                                {% if seance_cour.niveau.niveau == niveau.niveau %}
+                                                                                            
+                                                                                        <table class='value'>
+                                                                                            <ul>
+                                                                                                <li> 
+                                                                                                    <tr>
+                                                                                                        <td class='date'>{{seance_cour.date_debut}}  à  {{seance_cour.date_fin}}</td>
+                                                                                                        <td class='salle'>{{seance_cour.salle}} </td>
+                                                                                                        <td class='enseignant'> {{seance_cour.enseignant.last_name}} {{seance_cour.enseignant.first_name}}</td>
+                                                                                                        <td class='niveau'> {{seance_cour.niveau}} </td>
+                                                                                                        <td class='cour'> {{seance_cour.cour}} </td>
+                                                                                                    </tr>
+                                                                                                </li>
+                                                                                            </ul> 
+                                                                                        </table> 
+                                                                                                {% endif %}
+                                                                                            {% endif %}
+                                                                                        {% endfor %}
+                                                                                        
+                                                                        
+                                                                                            
+                                                                                        
+                                                                        </div>
+                                                                    </div>   
+                                                                
+                                                                {% endif %}
+                                                            {% endif%}
+                                                       
+                                                
+                                            {% endfor%}
+                                        
+                                            </div>
+                                
+                                            <div class='cadre_info_TD'>
+                                                    <div class='cadre_libSeance'><h2 class='libSeance'>TD</h2></div>
+                                                    
+                                                    {% for seance_td in seance_TDs.all %}
+
+                                                        {% if seance_td.group_td.groupe %}
+                                                            {% if seance_td.filiere.filiere == filiere.filiere %}
+                                                                {% if seance_td.niveau.niveau %}
+
+                                                                
+                                                                    <div class='cadre_info_cour'>
+                                                                        <h2 class='cadre_niv_td'>{{ seance_td.niveau.niveau }} </h2><br/>
+                                                                            <div class='cadre_emp_td'> 
+                                                
+                                                                                
+                                                                            
+                                                                                <div class='cadre_GpTD'><h1 class='GpTD'>{{seance_td.group_td.groupe}}</h1></div>
+                                                                                
+                                                                                <div class='cadre_emplois'>    
+                                                                                                <table class='libele'>
+                                                                                                    <tr>
+                                                                                                        <th class='date'> Date</th>
+                                                                                                        <th class='salle'> Salle </th>
+                                                                                                        <th class='enseignant'> Enseignant </th>
+                                                                                                        <th class='niveau'> Niveau </th>
+                                                                                                        <th class='cour'> Cour </th>
+                                                                                                        <th class='Groupe_TD'> Group TD</th>
+                                                                                                    </tr> 
+                                                                                                </table>
+                                                                                                
+                                                                                                            <table class='value'>
+                                                                                                                    <ul>
+                                                                                                                        <li> 
+                                                                                                                            <tr>
+                                                                                                                                <td class='date'>{{seance_td.date_debut}}  à  {{seance_td.date_fin}}</td>
+                                                                                                                                <td class='salle'>{{seance_td.salle}} </td>
+                                                                                                                                <td class='enseignant'> {{seance_td.enseignant.last_name}} {{seance_td.enseignant.first_name}}</td>
+                                                                                                                                <td class='niveau'> {{seance_td.niveau}} </td>
+                                                                                                                                <td class='cour'> {{seance_td.cour}} </td>
+                                                                                                                                <td class='group_td'> {{seance_td.group_td.groupe}} </td>
+                                                
+                                                                                                                            </tr>
+                                                                                                                        </li>
+                                                                                                                    </ul> 
+                                                                                                            </table>    
+                                                                                    
+                                                                                                            
+                                                                                </div>
+                                                                                    
+                                                                            
+                                                                        
+                                                                            </div>
+                                                                    </div> 
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}  
+                                                    
+                                            
+                                                
+                                                
+                                            </div>
+
+                                    </div>
+                                
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                </div>
+            {% endif %}
+        
+    {% endfor %}
+    </div>
+    
+</div>
+
+{% endblock %}
+

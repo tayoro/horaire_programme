@@ -1,0 +1,552 @@
+{% extends 'emplois_temps/base.html' %}
+{% load static %}
+{% load myfilters %}
+
+
+
+
+
+
+<!--     bock content         --> 
+{% block content%}
+<style>
+    
+    body{
+        background-color:#f5f5f5;
+
+    }
+nav{
+    position:fixed;
+}
+
+#conteneur_section{
+    width: auto;
+    display: flex;
+    
+}
+
+#content{
+    
+    display:flex;
+    width:85%;
+    
+}
+
+#content_1{
+    width:15%;
+    text-align:center;
+    padding: 10px;
+}
+
+#content_1 .cadre_list_enseignant{
+
+    text-align:left;
+    padding-top:20px;
+    position:relative;
+    right:2px;
+    
+    
+
+}
+.cadre_seance{
+    
+}
+
+.cadre_info_perso{
+    height:100px;
+    text-align: center;
+    padding-top:20px;
+
+}
+
+.cardre_saisir{
+    align-items: center;
+    width:400px;
+    
+}
+
+
+.register-form{
+    width:100%;
+    max-width: 300px;
+    position:fixed
+    top:1000px
+    margin-top:40px;
+    padding:40px;
+    background-color: #fff;
+    margin-left:38px;
+    border-radius: 5px;
+
+
+}
+li{
+    list-style-type: none;
+}
+
+#seanceForm1{
+    display:inline
+}
+input{
+    margin-bottom:10px
+}
+
+form{
+    display:inline
+}
+
+select{
+    margin-bottom:10px
+    
+}
+
+.mainheading{
+    text-align: center;
+}
+
+.errorlist{
+    color:red;
+}
+.signup-button{
+    background-color: blue;
+    border-color: #2BA977;
+}
+.signup-button:hover{
+    background-color: #2BA977;
+    border-color: #2BA977;
+}
+.signup-button:focus{
+    background-color: #2BA977;
+    border-color: #2BA977;
+}
+
+.cadre_show_seance{
+    margin-bottom: auto;
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    
+}
+.cadre_show_seance .titre{
+    border:1px solid green;
+    text-align:center;
+}
+.cadre_info_empT_cour{
+    margin_bottom:100px;
+}
+.cadre_info_TD{
+    padding-top:200x;
+}
+.cadre_show_seance .cadre_info_cour{
+    margin-bottom:12px;
+    margin-top:50px;
+    padding-left:8px;
+    padding-right:8px;
+    height:auto;
+}
+.cadre_info_cour h2{
+    padding_bottom:10px;
+}
+.cadre_show_seance .cadre_info_cour .cadre_emplois{
+    
+    border:1px solid black;
+    margin-bottom:15px;
+    margin-top:1px;
+    padding:9px;
+    border-radius:10px;
+}
+
+
+table{
+    border:1px solid black;
+    width:100%;
+    text-align:center;
+}
+.libele {
+    border:1px solid black;
+    width:100%;
+    text-align:center;
+}
+th{
+    border:1px solid black;
+}
+td{
+    border:1px solid black;
+}
+.listprof{
+    background-color: #fff;
+    border:1px solid black;
+    width:100%;
+    padding-left:9px;
+    padding-top:9px;
+    position:relative;
+    right:12px;
+}
+
+.date{
+    width:400px;
+}
+.salle{
+    width:100px;
+}
+.enseignant{
+    width:250px;
+}
+.niveau{
+    width:100px;
+}
+.cour{
+    width:160px;
+}
+.cadre_libSeance{
+    margin-top:15px;
+    border:1px solid black;
+    text-align:center;
+}
+
+</style>
+
+
+    <div class='cadre_seance' >
+
+        <div class='cadre_info_perso'>
+            {% if user.type == 'Enseignantspecifique' %}
+                <h4>{{user.enseignantadditional.grade}} {{user.last_name}} {{user.first_name}}</h4>
+                <h5>Departement d'origine : {{ user.enseignantadditional.etab_orig}}</h5>
+            {% elif user.type == 'Secretaire' %}
+                <h4>Secretaire {{user.last_name}} {{user.first_name}}</h4> 
+                <h5>Departement: {{ user.secretaireadditional.departement}}</h5>
+            {% endif%}
+        </div>
+
+
+        {% if user.type == 'Enseignantspecifique' or user.type == 'Secretaire' %}
+
+        <div class='cardre_saisir'>
+
+            <div class="register-form">
+                <form>
+                    <p>
+                        <label for="profileType"></label>
+                            <select id="profileType" class="btn btn-primary btn-lg profileType-button">
+                            <option value="cour" {% if seanceCourForm.is_bound %} selected="selected" {% endif %}>Cour</option>
+                
+                            <option value="TD" {% if seanceTdForm.is_bound %} selected="selected" {% endif %}>TD</option>
+                        </select>
+                    </p>
+                </form>
+
+                <div id="seanceForm1">
+
+                        <form action="programmeseance" method="get" id="seanceCourForm">
+
+                            {% csrf_token %}
+                            <!-- reproduire le formulaire SecretaireProfileForm dans html pour l'utilisation--> 
+
+                            <h4 class ="mainheading"> Class Session </h4>
+                                
+                            <label for="id_salle" class="login-labels">Salle*</label> 
+                            {{ seanceCourForm.salle.errors }}
+                            {{ seanceCourForm.salle|addclass:'form-control'|addplaceholder:'Salle'}}
+
+                            <label for="id_enseignant" class="login-labels">Enseignant*</label> 
+                            {{ seanceCourForm.enseignant.errors }}
+                            {{ seanceCourForm.enseignant|addclass:'form-control'|addplaceholder:'Enseignant'}}
+
+                            <label for="id_date_debut" class="login-labels">Date debut *</label> 
+                            {{ seanceCourForm.date_debut.errors }}
+                            {{ seanceCourForm.date_debut|addclass:'form-control'|addplaceholder:'Date Debut'}}
+
+                            <label for="id_date_fin" class="login-labels">Date Fin*</label> 
+                            {{ seanceCourForm.date_fin.errors }}
+                            {{ seanceCourForm.date_fin|addclass:'form-control'|addplaceholder:'Date Fin'}}
+
+                            <label for="id_niveau" class="login-labels">Niveau*</label> 
+                            {{ seanceCourForm.niveau.errors }}
+                            {{ seanceCourForm.niveau|addclass:'form-control'|addplaceholder:'Niveau'}}
+
+                            <label for="id_cour" class="login-labels">Cour*</label> 
+                            {{ seanceCourForm.cour.errors }}
+                            {{ seanceCourForm.cour|addclass:'form-control'|addplaceholder:'Cour'}}
+
+                            <p>
+                                
+                                <input type="hidden" name="profileType" value="cour" />
+                                <button type="submit" value="valider" class="btn btn-primary btn-lg seance-button">Valider</button>
+                                
+                            </p>
+                            <br/>
+                            <div>
+                                {% for message in messages %}
+                                <h1 style="color: green;"> {{message}} </h1> 
+                                {% endfor %}
+                            </div> 
+                        </form>
+                </div>
+
+
+                <div id="seanceForm2">
+                     <form action="programmeseance" method="get" id="seanceTdForm">
+                        {% csrf_token %}
+                        <!--on recupere le formulaire 'seanceTdFrom' de la fonction 'user_profile' de 'vews.py' -->
+                        <!-- reproduire le formulaire enseignantProfileForm dans html pour l'utilisation-->
+                        {{ seanceTdForm.non_field_errors }}
+                        
+                        <h4 class ="mainheading"> TD Session </h4>
+                            
+                        <label for="id_salle" class="login-labels">Salle*</label> 
+                        {{ seanceTdForm.salle.errors }}
+                        {{ seanceTdForm.salle|addclass:'form-control'|addplaceholder:'Salle'}}
+
+                        <label for="id_enseignant" class="login-labels">Enseignant*</label> 
+                        {{ seanceTdForm.enseignant.errors }}
+                        {{ seanceTdForm.enseignant|addclass:'form-control'|addplaceholder:'Enseignant'}}
+
+                        <label for="id_date_debut" class="login-labels">Date debut *</label> 
+                        {{ seanceTdForm.date_debut.errors }}
+                        {{ seanceTdForm.date_debut|addclass:'form-control'|addplaceholder:'Date Debut'}}
+
+                        <label for="id_date_fin" class="login-labels">Date Fin *</label> 
+                        {{ seanceTdForm.date_fin.errors }}
+                        {{ seanceTdForm.date_fin|addclass:'form-control'|addplaceholder:'Date Fin'}}
+
+                        <label for="id_niveau" class="login-labels">Niveau*</label> 
+                        {{ seanceTdForm.niveau.errors }}
+                        {{ seanceTdForm.niveau|addclass:'form-control'|addplaceholder:'niveau'}}
+
+                        <label for="id_cour" class="login-labels">Cour*</label> 
+                        {{ seanceTdForm.cour.errors }}
+                        {{ seanceTdForm.cour|addclass:'form-control'|addplaceholder:'cour'}} 
+                        
+                        <label for="id_group_td" class="login-labels">Goupe TD</label> 
+                        {{ seanceTdForm.group_td.errors }}
+                        {{ seanceTdForm.group_td|addclass:'form-control'|addplaceholder:'group_td'}} 
+                        <p>
+                            <input type="hidden" name="profileType" value="TD" />
+                            <button type="submit" value="valider" class="btn btn-primary btn-lg seance-button">Valider</button>
+                        </p> 
+                        </br>
+                        <div>
+                            {% for message in messages %}
+                            <h1 style="color: green;"> {{message}} </h1> 
+                            {% endfor %}
+                        </div>
+                
+                            
+                    </form>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                console.log()
+                function displayRightForm() {
+                    if ($('#profileType').val() == "cour") {
+                        $('#seanceForm1').show();
+                        $('#seanceForm1_info').show();
+                        $('#seanceForm2').hide();
+                        $('#seanceForm2_info').hide();
+                        
+                    }
+                    else {
+                        $('#seanceForm2').show();
+                        $('#seanceForm2_info').show();
+                        $('#seanceForm1').hide();
+                        $('#seanceForm1_info').hide();
+                    }
+                }
+                
+                $(document).ready(displayRightForm);
+                $('#profileType').change(displayRightForm);
+                  
+
+
+
+                eventDrop: function (event) {
+                    var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
+                    var end = $.fullCalendar.formaDate(event.end, "Y-MM-DD HH:mm:ss");
+                    var title = event.title;
+                    var id = event.id;
+                    $.ajax({
+                        type: "GET",
+                        url: '/update',
+                        date: {'tite':title, 'start': start, 'end': end, 'id': id},
+                        dataType: "json",
+                        success: function(data) {
+                            calendar.fullCalendar('refetcheEvents');
+                            alert('Event update');
+                        },
+                        error: function(data){
+                            alert('there is a probleme!!!');  
+                        },
+                    });
+                },
+
+
+
+                eventResize: function(event) {
+                    var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
+                    var end = $.fullCalendar.formaDate(event.end, "Y-MM-DD HH:mm:ss");
+                    var title = event.title;
+                    var id = event.id;
+                    $.ajax({
+                        type: "GET",
+                        url: '/update',
+                        date: {'tite':title, 'start': start, 'end': end, 'id': id},
+                        dataType: "json",
+                        success: function(data) {
+                            calendar.fullCalendar('refetcheEvents');
+                            alert('Event update');
+                        },
+                        error: function(data){
+                            alert('there is a probleme!!!');  
+                        },
+                    });
+                },
+            </script>
+        </div>
+    </div>
+
+    <div class='cadre_show_seance'>
+            <div class='titre'><h1>Program</h1></div>
+            <div id="seanceForm1_info">  
+
+                <div class="cadre_info_empT_cour">
+                    <div class='cadre_libSeance'><h1 class='libSeance'>COUR</h1></div>
+                    {% for niveau in niveaux.all %}
+                        <div class='cadre_info_cour'>
+                            <h2>{{niveau.niveau}}</h2>
+                            <div class='cadre_emplois'>    
+                                            <table class='libele'>
+                                                <tr>
+                                                    <th class='date'> Date</th>
+                                                    <th class='salle'> Salle </th>
+                                                    <th class='enseignant'> Enseignant </th>
+                                                    <th class='niveau'> Niveau </th>
+                                                    <th class='cour'> Cour </th>
+                                                </tr> 
+                                            </table>
+                                            {% for seance_cour in seance_cours %}
+                                                {% if seance_cour.niveau.niveau == niveau.niveau%}
+                                            <table class='value'>
+                                                <ul>
+                                                    <li> 
+                                                        <tr>
+                                                            <td class='date'>{{seance_cour.date_debut}}  à  {{seance_cour.date_fin}}</td>
+                                                            <td class='salle'>{{seance_cour.salle}} </td>
+                                                            <td class='enseignant'> {{seance_cour.enseignant.last_name}} {{seance_cour.enseignant.first_name}}</td>
+                                                            <td class='niveau'> {{seance_cour.niveau}} </td>
+                                                            <td class='cour'> {{seance_cour.cour}} </td>
+                                                        </tr>
+                                                    </li>
+                                                </ul> 
+                                            </table>    
+                            
+                                                {% endif%}
+                                            {% endfor%}     
+                            </div>
+                        </div>   
+                    {% endfor%}
+                </div>
+                
+            </div>
+            <div id="seanceForm2_info">
+                    <div class='cadre_info_TD'>
+                        <div class='cadre_libSeance'><h1 class='libSeance'>TD</h1></div>
+                        
+                            {% for niveau in niveaux.all %}
+                            <div class='cadre_info_cour'>
+                                <h2>{{niveau.niveau}} </h2><br/>
+                                    <div class='cadre_emp_td'> 
+
+                                        {% for group_td in group_tds.all %}
+                                            {% for niveau_td in group_td.niveau.all %}
+                                            <div class='cadre_GpTD'><h1 class='GpTD'>{{group_td.groupe}} et {{niveau_td}}</h1></div>
+                                            {% endfor%}
+                                        <div class='cadre_emplois'>    
+                                                        <table class='libele'>
+                                                            <tr>
+                                                                <th class='date'> Date</th>
+                                                                <th class='salle'> Salle </th>
+                                                                <th class='enseignant'> Enseignant </th>
+                                                                <th class='niveau'> Niveau </th>
+                                                                <th class='cour'> Cour </th>
+                                                                <th class='Groupe_TD'> Group TD</th>
+                                                            </tr> 
+                                                        </table>
+                                                            {%for seance_td in seance_TDs.all %}
+                                                            
+                                                                {% if seance_td.niveau.niveau == niveau.niveau %}
+                                                                    {% if seance_td.group_td.groupe == group_td.groupe%}
+                                                                        <table class='value'>
+                                                                            <ul>
+                                                                                <li> 
+                                                                                    <tr>
+                                                                                        <td class='date'>{{seance_td.date_debut}}  à  {{seance_td.date_fin}}</td>
+                                                                                        <td class='salle'>{{seance_td.salle}} </td>
+                                                                                        <td class='enseignant'> {{seance_td.enseignant.last_name}} {{seance_td.enseignant.first_name}}</td>
+                                                                                        <td class='niveau'> {{seance_td.niveau}} </td>
+                                                                                        <td class='cour'> {{seance_td.cour}} </td>
+                                                                                        <td class='group_td'> {{seance_td.group_td.groupe}} </td>
+
+                                                                                    </tr>
+                                                                                </li>
+                                                                            </ul> 
+                                                                        </table>    
+                                            
+                                                                    {% endif%}
+                                                        
+                                                                {% endif%}    
+                                                            {% endfor %}
+                                        </div>
+                                            
+                                        {% endfor%}
+                                
+                                    </div>
+                            </div> 
+                            {% endfor %}   
+                        
+                
+                    
+                    </div>
+            </div> 
+            
+    </div>
+
+{% endif%}
+
+{% endblock %}
+
+<!--     bock content_1         --> 
+{% block content_1 %}
+<h3>Liste professeur </h3>
+<div class='cadre_list_enseignant'>  
+    
+    {% if user.type == 'Secretaire' %}
+        <ul>
+            {% for departement in departements.all%}
+                {% for enseignant in enseignants.all %}
+                    <!--     si le etab_orig d'un enseignant  =  un departement et  = au departement d'utilisateur secretaitre connecté alors          -->
+                    {% if enseignant.enseignantadditional.etab_orig.name == departement.name and departement.name == user.secretaireadditional.departement.name %}
+                
+                        <li><div class='listprof'><p>{{enseignant.last_name}} {{enseignant.first_name}} </p></div></li>
+                    
+                    {%endif%} 
+                
+                {%endfor%}
+            {% endfor%}
+        </ul>
+    {% elif user.type == 'Enseignantspecifique' %}
+        {% for departement in departements.all%}
+                {% for enseignant in enseignants.all %}
+                <!--     si le etab_orig d'un enseignant  =  un departement et  = a etab_orig  d'utilisateur enseignant connecté alors          -->
+                    {% if enseignant.enseignantadditional.etab_orig.name == departement.name and departement.name == user.enseignantadditional.etab_orig.name %}
+                
+                        <li><div class='listprof'><p>{{enseignant.last_name}} {{enseignant.first_name}} </p></div></li>
+                    
+                    {%endif%} 
+                
+                {%endfor%}
+        {% endfor%}
+    {% endif%}
+</div>
+{% endblock %}
+

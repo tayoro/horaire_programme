@@ -1,0 +1,348 @@
+{% extends 'emplois_temps/base.html' %}
+{% load static %}
+{% load myfilters %}
+
+
+
+
+
+
+<!--     bock content         --> 
+{% block content%}
+<style>
+    
+    body{
+        background-color:#f5f5f5;
+
+    }
+nav{
+    position:fixed;
+}
+
+#conteneur_section{
+    width: auto;
+    display: flex;
+    
+}
+
+#content{
+    border:1px solid black;
+    display:flex;
+    width:100%;
+    
+}
+
+
+
+
+.cadre_seance{
+    
+}
+
+.cadre_info_perso{
+    height:100px;
+    text-align: center;
+    padding-top:20px;
+
+}
+
+.cardre_saisir{
+    align-items: center;
+    width:400px;
+    
+}
+
+
+.register-form{
+    width:100%;
+    max-width: 300px;
+    position:fixed
+    top:1000px
+    margin-top:40px;
+    padding:40px;
+    background-color: #fff;
+    margin-left:38px;
+    border-radius: 5px;
+
+
+}
+li{
+    list-style-type: none;
+}
+
+#seanceForm1{
+    display:inline
+}
+input{
+    margin-bottom:10px
+}
+
+form{
+    display:inline
+}
+
+select{
+    margin-bottom:10px
+    
+}
+
+.mainheading{
+    text-align: center;
+}
+
+.errorlist{
+    color:red;
+}
+.signup-button{
+    background-color: blue;
+    border-color: #2BA977;
+}
+.signup-button:hover{
+    background-color: #2BA977;
+    border-color: #2BA977;
+}
+.signup-button:focus{
+    background-color: #2BA977;
+    border-color: #2BA977;
+}
+
+.calendrier{
+    margin-bottom: auto;
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border:1px solid red;
+ 
+}
+
+
+
+.cadre_info_empT_cour{
+    margin_bottom:100px;
+}
+.cadre_info_TD{
+    padding-top:200x;
+}
+
+.cadre_info_cour h2{
+    padding_bottom:10px;
+}
+
+
+table{
+    border:1px solid black;
+    width:100%;
+    text-align:center;
+}
+.libele {
+    border:1px solid black;
+    width:100%;
+    text-align:center;
+}
+th{
+    border:1px solid black;
+}
+td{
+    border:1px solid black;
+}
+.listprof{
+    background-color: #fff;
+    border:1px solid black;
+    width:100%;
+    padding-left:9px;
+    padding-top:9px;
+    position:relative;
+    right:12px;
+}
+
+.date{
+    width:400px;
+}
+.salle{
+    width:100px;
+}
+.enseignant{
+    width:250px;
+}
+.niveau{
+    width:100px;
+}
+.cour{
+    width:160px;
+}
+.cadre_libSeance{
+    margin-top:15px;
+    border:1px solid black;
+    text-align:center;
+}
+
+</style>
+
+
+    <div class='cadre_seance' >
+
+        <div class='cadre_info_perso'>
+            {% if user.type == 'Enseignantspecifique' %}
+                <h4>{{user.enseignantadditional.grade}} {{user.last_name}} {{user.first_name}}</h4>
+                <h5>Departement d'origine : {{ user.enseignantadditional.etab_orig}}</h5>
+            {% elif user.type == 'Secretaire' %}
+                <h4>Secretaire {{user.last_name}} {{user.first_name}}</h4> 
+                <h5>Departement: {{ user.secretaireadditional.departement}}</h5>
+            {% endif%}
+        </div>
+
+
+        {% if user.type == 'Enseignantspecifique' or user.type == 'Secretaire' %}
+
+        <div class='cardre_saisir'>
+
+            <div class="register-form">
+                <form>
+                    <p>
+                        <label for="profileType"></label>
+                        <select id="profileType" class="btn btn-primary btn-lg profileType-button">
+                            <option value="cour" {% if seanceCourForm.is_bound %} selected="selected" {% endif %}>Cour</option>
+                
+                            <option value="TD" {% if seanceTdForm.is_bound %} selected="selected" {% endif %}>TD</option>
+                        </select>
+                    </p>
+                </form>
+
+                <div id="seanceForm1">
+
+                        <form action="programmeseance1" method="get" id="seanceCourForm">
+
+                            {% csrf_token %}
+                            <!-- reproduire le formulaire SecretaireProfileForm dans html pour l'utilisation--> 
+
+                            <h4 class ="mainheading"> Class Session </h4>
+                                
+                            <label for="id_filiere" class="login-labels">Filiere*</label> 
+                            {{ seanceCourForm.filiere.errors }}
+                            {{ seanceCourForm.filiere|addclass:'form-control'|addplaceholder:'Filiere'}}
+
+                            <label for="id_salle" class="login-labels">Salle*</label> 
+                            {{ seanceCourForm.salle.errors }}
+                            {{ seanceCourForm.salle|addclass:'form-control'|addplaceholder:'Salle'}}
+
+                            <label for="id_enseignant" class="login-labels">Enseignant*</label> 
+                            {{ seanceCourForm.enseignant.errors }}
+                            {{ seanceCourForm.enseignant|addclass:'form-control'|addplaceholder:'Enseignant'}}
+
+                            <label for="id_date_debut" class="login-labels">Date debut *</label> 
+                            {{ seanceCourForm.date_debut.errors }}
+                            {{ seanceCourForm.date_debut|addclass:'form-control'|addplaceholder:'Date Debut'}}
+
+                            <label for="id_date_fin" class="login-labels">Date Fin*</label> 
+                            {{ seanceCourForm.date_fin.errors }}
+                            {{ seanceCourForm.date_fin|addclass:'form-control'|addplaceholder:'Date Fin'}}
+
+                            <label for="id_niveau" class="login-labels">Niveau*</label> 
+                            {{ seanceCourForm.niveau.errors }}
+                            {{ seanceCourForm.niveau|addclass:'form-control'|addplaceholder:'Niveau'}}
+
+                            <label for="id_cour" class="login-labels">Cour*</label> 
+                            {{ seanceCourForm.cour.errors }}
+                            {{ seanceCourForm.cour|addclass:'form-control'|addplaceholder:'Cour'}}
+
+                            <p>
+                                
+                                <input type="hidden" name="profileType" value="cour" />
+                                <button type="submit" value="valider" class="btn btn-primary btn-lg seance-button">Valider</button>
+                                
+                            </p>
+                            <br/>
+                            <div>
+                                {% for message in messages %}
+                                <h1 style="color: green;"> {{message}} </h1> 
+                                {% endfor %}
+                            </div> 
+                        </form>
+                </div>
+
+
+                <div id="seanceForm2">
+                     <form action="programmeseance1" method="get" id="seanceTdForm">
+                        {% csrf_token %}
+                        <!--on recupere le formulaire 'seanceTdFrom' de la fonction 'user_profile' de 'vews.py' -->
+                        <!-- reproduire le formulaire enseignantProfileForm dans html pour l'utilisation-->
+                        {{ seanceTdForm.non_field_errors }}
+                        
+                        <h4 class ="mainheading"> TD Session </h4>
+
+                        <label for="id_filiere" class="login-labels">Filiere*</label> 
+                        {{ seanceTdForm.filiere.errors }}
+                        {{ seanceTdForm.filiere|addclass:'form-control'|addplaceholder:'Filiere'}}
+                            
+                        <label for="id_salle" class="login-labels">Salle*</label> 
+                        {{ seanceTdForm.salle.errors }}
+                        {{ seanceTdForm.salle|addclass:'form-control'|addplaceholder:'Salle'}}
+
+                        <label for="id_enseignant" class="login-labels">Enseignant*</label> 
+                        {{ seanceTdForm.enseignant.errors }}
+                        {{ seanceTdForm.enseignant|addclass:'form-control'|addplaceholder:'Enseignant'}}
+
+                        <label for="id_date_debut" class="login-labels">Date debut *</label> 
+                        {{ seanceTdForm.date_debut.errors }}
+                        {{ seanceTdForm.date_debut|addclass:'form-control'|addplaceholder:'Date Debut'}}
+
+                        <label for="id_date_fin" class="login-labels">Date Fin *</label> 
+                        {{ seanceTdForm.date_fin.errors }}
+                        {{ seanceTdForm.date_fin|addclass:'form-control'|addplaceholder:'Date Fin'}}
+
+                        <label for="id_niveau" class="login-labels">Niveau*</label> 
+                        {{ seanceTdForm.niveau.errors }}
+                        {{ seanceTdForm.niveau|addclass:'form-control'|addplaceholder:'niveau'}}
+
+                        <label for="id_cour" class="login-labels">Cour*</label> 
+                        {{ seanceTdForm.cour.errors }}
+                        {{ seanceTdForm.cour|addclass:'form-control'|addplaceholder:'cour'}} 
+                        
+                        <label for="id_group_td" class="login-labels">Goupe TD</label> 
+                        {{ seanceTdForm.group_td.errors }}
+                        {{ seanceTdForm.group_td|addclass:'form-control'|addplaceholder:'group_td'}} 
+                        <p>
+                            <input type="hidden" name="profileType" value="TD" />
+                            <button type="submit" value="valider" class="btn btn-primary btn-lg seance-button">Valider</button>
+                        </p> 
+                        </br>
+                        <div>
+                            {% for message in messages %}
+                            <h1 style="color: green;"> {{message}} </h1> 
+                            {% endfor %}
+                        </div>
+                
+                            
+                    </form>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                console.log()
+                function displayRightForm() {
+                    if ($('#profileType').val() == "cour") {
+                        $('#seanceForm1').show();
+                        $('#seanceForm2').hide();
+                        
+                    }
+                    else {
+                        $('#seanceForm2').show();
+                        $('#seanceForm1').hide();
+                    }
+                }
+                
+                $(document).ready(displayRightForm);
+                $('#profileType').change(displayRightForm);
+                  
+            </script>
+        </div>
+
+        {% endif %}
+    </div>
+    
+    <div class='calendrier'>
+        <div id='calendar'></div>
+    </div>
+
+   
+{% endblock %}

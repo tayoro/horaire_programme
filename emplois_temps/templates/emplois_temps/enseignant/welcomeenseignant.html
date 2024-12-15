@@ -1,0 +1,21 @@
+{% extends 'emplois_temps/base.html' %}
+
+{% block content %}
+
+   <h1>{{user.enseignantadditional.grade}} {{user.last_name}} {{user.first_name}} <h1>
+      
+   {% if user.type == 'Enseignant'%}
+      <h1> je dois recevoir l'emplois du temps</h1> 
+   {% else %}
+      <h1> je peux consulter l'emplois du temps et faire l'emplois du temps  </h1> 
+   {% endif%}
+
+   <h1> Departement d'origine : {{ user.enseignantadditional.etab_orig}}</h1>
+   <h1> Les departements d'enseignement : </h1>
+   {% for departe in user.enseignantadditional.departement.all %}
+      <h1> {{ departe }} </h1> <br/>
+   {% endfor %}
+
+
+
+{% endblock %}
